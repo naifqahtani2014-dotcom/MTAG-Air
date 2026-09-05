@@ -1,0 +1,74 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <% if (justCreated) { %>
+      <div class="alert alert-success">✅ تم إصدار الترخيص بنجاح وحفظه في قاعدة البيانات.</div>
+    <% } %>
+
+    <div class="panel-header">
+      <h1 class="mono"><%= license.license_number %></h1>
+      <div class="form-actions" style="margin:0;">
+        <a href="/licenses/<%= encodeURIComponent(license.license_number) %>/certificate" class="btn btn-gold btn-sm" target="_blank">🎖️ الشهادة</a>
+        <% if (user.role === 'Administrator' || user.role === 'License Officer') { %>
+          <a href="/licenses/<%= encodeURIComponent(license.license_number) %>/edit" class="btn btn-outline btn-sm">تعديل</a>
+        <% } %>
+        <a href="/licenses" class="btn btn-outline btn-sm">رجوع</a>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:24px;">
+      <span class="badge badge-<%= license.status.toLowerCase() %>" style="margin-bottom:20px;"><%= statusLabels[license.status] %></span>
+
+      <ul class="detail-list">
+        <li><span class="k">حامل الترخيص</span><span class="v"><%= license.holder_name %></span></li>
+        <li><span class="k">الشركة / الجهة</span><span class="v"><%= license.company || '—' %></span></li>
+        <li><span class="k">نوع الترخيص</span><span class="v"><%= license.license_type %></span></li>
+        <li><span class="k">الفئة</span><span class="v"><%= categoryLabel(license.category) %></span></li>
+        <li><span class="k">معلومات الطائرة</span><span class="v"><%= license.aircraft_info || '—' %></span></li>
+        <li><span class="k">تاريخ الإصدار</span><span class="v"><%= license.issue_date %></span></li>
+        <li><span class="k">تاريخ الانتهاء</span><span class="v"><%= license.expiration_date %></span></li>
+        <li><span class="k">صادر عن</span><span class="v"><%= license.issued_by %></span></li>
+        <% if (license.notes) { %>
+          <li><span class="k">ملاحظات</span><span class="v"><%= license.notes %></span></li>
+        <% } %>
+        <li><span class="k">تاريخ الإنشاء</span><span class="v"><%= license.created_at %></span></li>
+        <li><span class="k">آخر تحديث</span><span class="v"><%= license.updated_at %></span></li>
+      </ul>
+    </div>
+
+    <% if (user.role === 'Administrator') { %>
+      <div class="panel">
+        <h2 style="margin-top:0;">تغيير حالة الترخيص</h2>
+        <div class="form-actions">
+          <% if (license.status !== 'Active') { %>
+            <form method="POST" action="/licenses/<%= encodeURIComponent(license.license_number) %>/status" data-confirm="هل تريد إعادة تفعيل هذا الترخيص؟">
+              <input type="hidden" name="status" value="Active">
+              <button type="submit" class="btn btn-success btn-sm">إعادة تفعيل</button>
+            </form>
+          <% } %>
+          <% if (license.status !== 'Suspended') { %>
+            <form method="POST" action="/licenses/<%= encodeURIComponent(license.license_number) %>/status" data-confirm="هل تريد إيقاف هذا الترخيص مؤقتاً؟">
+              <input type="hidden" name="status" value="Suspended">
+              <button type="submit" class="btn btn-outline btn-sm">إيقاف مؤقت</button>
+            </form>
+          <% } %>
+          <% if (license.status !== 'Expired') { %>
+            <form method="POST" action="/licenses/<%= encodeURIComponent(license.license_number) %>/status" data-confirm="هل تريد تعليم هذا الترخيص كمنتهي؟">
+              <input type="hidden" name="status" value="Expired">
+              <button type="submit" class="btn btn-outline btn-sm">تعليم كمنتهي</button>
+            </form>
+          <% } %>
+          <% if (license.status !== 'Revoked') { %>
+            <form method="POST" action="/licenses/<%= encodeURIComponent(license.license_number) %>/status" data-confirm="هذا الإجراء سيلغي الترخيص نهائياً. هل أنت متأكد؟">
+              <input type="hidden" name="status" value="Revoked">
+              <button type="submit" class="btn btn-danger btn-sm">إلغاء الترخيص</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

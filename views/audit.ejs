@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="panel-header">
+      <h1>سجل التدقيق</h1>
+      <a href="/employees/dashboard" class="btn btn-outline btn-sm">رجوع للوحة التحكم</a>
+    </div>
+
+    <% if (logs.length === 0) { %>
+      <div class="empty-state panel">
+        <div class="icon">📋</div>
+        <p>لا توجد أي سجلات بعد.</p>
+      </div>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>الوقت</th>
+              <th>المستخدم</th>
+              <th>الإجراء</th>
+              <th>رقم الترخيص</th>
+              <th>تفاصيل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% logs.forEach(function(log) { %>
+              <tr>
+                <td><%= log.timestamp %></td>
+                <td><%= log.username %></td>
+                <td><%= log.action %></td>
+                <td class="mono"><%= log.license_number || '—' %></td>
+                <td><%= log.details || '—' %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

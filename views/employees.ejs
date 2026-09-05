@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="panel-header">
+      <h1>إدارة الموظفين</h1>
+      <a href="/employees/dashboard" class="btn btn-outline btn-sm">رجوع للوحة التحكم</a>
+    </div>
+
+    <div class="grid-2" style="align-items:start;">
+      <div class="panel">
+        <h2 style="margin-top:0;">إضافة موظف جديد</h2>
+
+        <% if (errors && errors.length) { %>
+          <div class="alert alert-error">
+            <ul>
+              <% errors.forEach(function(e) { %><li><%= e %></li><% }); %>
+            </ul>
+          </div>
+        <% } %>
+
+        <form method="POST" action="/employees/employees-list">
+          <div class="field">
+            <label for="username">اسم المستخدم</label>
+            <input type="text" id="username" name="username" required maxlength="50" placeholder="أحرف إنجليزية وأرقام">
+          </div>
+          <div class="field">
+            <label for="full_name">الاسم الكامل</label>
+            <input type="text" id="full_name" name="full_name" required maxlength="150">
+          </div>
+          <div class="field">
+            <label for="role">الدور الوظيفي</label>
+            <select id="role" name="role" required>
+              <% roles.forEach(function(r) { %><option value="<%= r %>"><%= r %></option><% }); %>
+            </select>
+          </div>
+          <div class="field">
+            <label for="password">كلمة المرور</label>
+            <input type="password" id="password" name="password" required minlength="8">
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">إنشاء الحساب</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2 style="margin-top:0;">الموظفون الحاليون</h2>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>الاسم</th>
+                <th>الدور</th>
+                <th>الحالة</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% employees.forEach(function(emp) { %>
+                <tr>
+                  <td><%= emp.full_name %><br><span class="muted mono" style="font-size:0.78rem;"><%= emp.username %></span></td>
+                  <td><%= emp.role %></td>
+                  <td>
+                    <span class="badge <%= emp.active ? 'badge-active' : 'badge-revoked' %>">
+                      <%= emp.active ? 'نشط' : 'معطل' %>
+                    </span>
+                  </td>
+                  <td>
+                    <form method="POST" action="/employees/employees-list/<%= emp.id %>/toggle-active" data-confirm="<%= emp.active ? 'هل تريد تعطيل هذا الحساب؟' : 'هل تريد تفعيل هذا الحساب؟' %>">
+                      <input type="hidden" name="active" value="<%= emp.active ? '0' : '1' %>">
+                      <button type="submit" class="btn btn-outline btn-sm"><%= emp.active ? 'تعطيل' : 'تفعيل' %></button>
+                    </form>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

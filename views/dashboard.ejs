@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="panel-header">
+      <h1>لوحة التحكم</h1>
+      <div class="form-actions" style="margin:0;">
+        <a href="/licenses/create" class="btn btn-primary btn-sm">+ ترخيص جديد</a>
+        <a href="/licenses" class="btn btn-outline btn-sm">إدارة التراخيص</a>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value"><%= total %></div>
+        <div class="stat-label">إجمالي التراخيص</div>
+      </div>
+      <div class="stat-card stat-active">
+        <div class="stat-value"><%= counts.Active %></div>
+        <div class="stat-label">سارية</div>
+      </div>
+      <div class="stat-card stat-expired">
+        <div class="stat-value"><%= counts.Expired %></div>
+        <div class="stat-label">منتهية</div>
+      </div>
+      <div class="stat-card stat-suspended">
+        <div class="stat-value"><%= counts.Suspended %></div>
+        <div class="stat-label">موقوفة</div>
+      </div>
+      <div class="stat-card stat-revoked">
+        <div class="stat-value"><%= counts.Revoked %></div>
+        <div class="stat-label">ملغاة</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <h2>أحدث التراخيص</h2>
+        <a href="/licenses" class="btn btn-outline btn-sm">عرض الكل</a>
+      </div>
+
+      <% if (recent.length === 0) { %>
+        <div class="empty-state">
+          <div class="icon">🗂️</div>
+          <p>لا توجد تراخيص بعد. ابدأ بإنشاء أول ترخيص.</p>
+        </div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>رقم الترخيص</th>
+                <th>الحامل</th>
+                <th>النوع</th>
+                <th>الحالة</th>
+                <th>تاريخ الإصدار</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% recent.forEach(function(lic) { %>
+                <tr>
+                  <td class="mono"><%= lic.license_number %></td>
+                  <td><%= lic.holder_name %></td>
+                  <td><%= lic.license_type %></td>
+                  <td>
+                    <span class="badge badge-<%= lic.status.toLowerCase() %>">
+                      <%= lic.status === 'Active' ? 'سارٍ' : lic.status === 'Expired' ? 'منتهي' : lic.status === 'Suspended' ? 'موقوف' : 'ملغى' %>
+                    </span>
+                  </td>
+                  <td><%= lic.issue_date %></td>
+                  <td><a href="/licenses/<%= encodeURIComponent(lic.license_number) %>" class="btn btn-outline btn-sm">عرض</a></td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

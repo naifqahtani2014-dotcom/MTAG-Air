@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<section class="section login-wrap">
+  <div class="container">
+    <div class="panel login-panel">
+      <div class="login-icon">✈</div>
+      <h1>دخول الموظفين</h1>
+      <p class="login-sub">الوصول مخصص لموظفي MTAG المعتمدين فقط.</p>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form method="POST" action="/employees/login">
+        <div class="field">
+          <label for="username">اسم المستخدم</label>
+          <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="password">كلمة المرور</label>
+          <input type="password" id="password" name="password" autocomplete="current-password" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

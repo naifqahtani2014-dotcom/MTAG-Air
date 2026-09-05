@@ -1,0 +1,77 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="panel-header">
+      <h1>إدارة التراخيص</h1>
+      <a href="/licenses/create" class="btn btn-primary btn-sm">+ ترخيص جديد</a>
+    </div>
+
+    <div class="toolbar">
+      <form method="GET" action="/licenses">
+        <input type="search" name="q" placeholder="ابحث برقم الترخيص أو الاسم أو الشركة" value="<%= filters.search || '' %>">
+        <select name="status">
+          <option value="">كل الحالات</option>
+          <option value="Active" <%= filters.status === 'Active' ? 'selected' : '' %>>سارٍ</option>
+          <option value="Expired" <%= filters.status === 'Expired' ? 'selected' : '' %>>منتهي</option>
+          <option value="Suspended" <%= filters.status === 'Suspended' ? 'selected' : '' %>>موقوف</option>
+          <option value="Revoked" <%= filters.status === 'Revoked' ? 'selected' : '' %>>ملغى</option>
+        </select>
+        <button type="submit" class="btn btn-outline btn-sm">تصفية</button>
+        <% if (filters.search || filters.status) { %>
+          <a href="/licenses" class="btn btn-outline btn-sm">مسح</a>
+        <% } %>
+      </form>
+    </div>
+
+    <% if (licenses.length === 0) { %>
+      <div class="empty-state panel">
+        <div class="icon">🗂️</div>
+        <p>لا توجد نتائج مطابقة.</p>
+      </div>
+    <% } else { %>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>رقم الترخيص</th>
+              <th>الحامل</th>
+              <th>الشركة</th>
+              <th>الفئة</th>
+              <th>الحالة</th>
+              <th>الانتهاء</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <% licenses.forEach(function(lic) { %>
+              <tr>
+                <td class="mono"><%= lic.license_number %></td>
+                <td><%= lic.holder_name %></td>
+                <td><%= lic.company || '—' %></td>
+                <td><%= categoryLabel(lic.category) %></td>
+                <td><span class="badge badge-<%= lic.status.toLowerCase() %>"><%= statusLabels[lic.status] %></span></td>
+                <td><%= lic.expiration_date %></td>
+                <td><a href="/licenses/<%= encodeURIComponent(lic.license_number) %>" class="btn btn-outline btn-sm">عرض</a></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if (pagination.totalPages > 1) { %>
+        <div class="pagination">
+          <% for (let p = 1; p <= pagination.totalPages; p++) { %>
+            <% if (p === pagination.page) { %>
+              <span class="current"><%= p %></span>
+            <% } else { %>
+              <a href="/licenses?page=<%= p %><%= filters.status ? '&status='+filters.status : '' %><%= filters.search ? '&q='+encodeURIComponent(filters.search) : '' %>"><%= p %></a>
+            <% } %>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

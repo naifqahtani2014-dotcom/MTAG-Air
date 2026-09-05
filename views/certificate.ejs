@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شهادة <%= license.license_number %> | MTAG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="certificate-page">
+    <div class="certificate-toolbar">
+      <button class="btn btn-primary btn-sm" data-print>🖨️ طباعة الشهادة</button>
+      <a href="/licenses/<%= encodeURIComponent(license.license_number) %>" class="btn btn-outline btn-sm">رجوع</a>
+    </div>
+
+    <div class="certificate">
+      <div class="cert-header">
+        <div class="cert-brand">
+          <div class="mark">✈</div>
+          <div>
+            <strong>MTAG</strong>
+            <span>منظومة الطيران العالمي</span>
+          </div>
+        </div>
+        <div class="cert-number">
+          <div class="lbl">رقم الترخيص</div>
+          <div class="num"><%= license.license_number %></div>
+        </div>
+      </div>
+
+      <div class="cert-title">
+        <h1>شهادة ترخيص طيران رسمية</h1>
+        <p>MTAG OFFICIAL AVIATION LICENSE CERTIFICATE</p>
+      </div>
+
+      <div class="cert-body">
+        <div class="cert-fields">
+          <div class="cert-field">
+            <div class="k">حامل الترخيص</div>
+            <div class="v"><%= license.holder_name %></div>
+          </div>
+          <div class="cert-field">
+            <div class="k">الشركة / الجهة</div>
+            <div class="v"><%= license.company || '—' %></div>
+          </div>
+          <div class="cert-field">
+            <div class="k">نوع الترخيص</div>
+            <div class="v"><%= license.license_type %></div>
+          </div>
+          <div class="cert-field">
+            <div class="k">فئة الطيران</div>
+            <div class="v"><%= categoryLabel(license.category) %></div>
+          </div>
+          <% if (license.aircraft_info) { %>
+          <div class="cert-field full">
+            <div class="k">معلومات الطائرة</div>
+            <div class="v"><%= license.aircraft_info %></div>
+          </div>
+          <% } %>
+          <div class="cert-field">
+            <div class="k">تاريخ الإصدار</div>
+            <div class="v"><%= license.issue_date %></div>
+          </div>
+          <div class="cert-field">
+            <div class="k">تاريخ الانتهاء</div>
+            <div class="v"><%= license.expiration_date %></div>
+          </div>
+          <div class="cert-field">
+            <div class="k">صادر عن</div>
+            <div class="v"><%= license.issued_by %></div>
+          </div>
+          <div class="cert-field cert-status">
+            <div class="k">الحالة</div>
+            <div class="v"><span class="badge badge-<%= license.status.toLowerCase() %>"><%= statusLabels[license.status] %></span></div>
+          </div>
+        </div>
+
+        <div class="cert-side">
+          <% if (qrDataUrl) { %>
+            <div class="cert-qr">
+              <img src="<%= qrDataUrl %>" alt="QR للتحقق من الترخيص" width="180" height="180">
+            </div>
+            <div class="cert-qr-label">امسح للتحقق الفوري</div>
+          <% } %>
+          <div class="cert-seal">MTAG<br>OFFICIAL<br>SEAL</div>
+        </div>
+      </div>
+
+      <div class="cert-footer">
+        <p class="cert-disclaimer">
+          منظمة خيالية تابعة لروبلكس لا تمثل الواقع ولا تمت له بصلة. هذه الوثيقة
+          لأغراض لعب الأدوار الترفيهية فقط ولا تحمل أي صفة رسمية أو قانونية.
+        </p>
+        <p class="muted" style="font-size:0.75rem;"><%= verifyUrl %></p>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

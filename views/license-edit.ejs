@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="panel">
+      <div class="panel-header">
+        <h1>تعديل الترخيص <span class="mono muted"><%= license.license_number %></span></h1>
+        <a href="/licenses/<%= encodeURIComponent(license.license_number) %>" class="btn btn-outline btn-sm">إلغاء</a>
+      </div>
+
+      <% if (errors && errors.length) { %>
+        <div class="alert alert-error">
+          <strong>يرجى تصحيح الأخطاء التالية:</strong>
+          <ul>
+            <% errors.forEach(function(e) { %><li><%= e %></li><% }); %>
+          </ul>
+        </div>
+      <% } %>
+
+      <form method="POST" action="/licenses/<%= encodeURIComponent(license.license_number) %>/edit">
+        <div class="form-grid">
+          <div class="field">
+            <label for="holder_name">اسم حامل الترخيص *</label>
+            <input type="text" id="holder_name" name="holder_name" required maxlength="200" value="<%= license.holder_name || '' %>">
+          </div>
+          <div class="field">
+            <label for="company">الشركة / الجهة</label>
+            <input type="text" id="company" name="company" maxlength="200" value="<%= license.company || '' %>">
+          </div>
+          <div class="field">
+            <label for="license_type">نوع الترخيص *</label>
+            <input type="text" id="license_type" name="license_type" list="typeSuggestions" required maxlength="200" value="<%= license.license_type || '' %>">
+            <datalist id="typeSuggestions">
+              <% typeSuggestions.forEach(function(t) { %><option value="<%= t %>"><% }); %>
+            </datalist>
+          </div>
+          <div class="field">
+            <label for="category">فئة الطيران *</label>
+            <select id="category" name="category" required>
+              <% categories.forEach(function(c) { %>
+                <option value="<%= c.value %>" <%= license.category === c.value ? 'selected' : '' %>><%= c.label %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="aircraft_info">معلومات الطائرة (إن وجدت)</label>
+            <input type="text" id="aircraft_info" name="aircraft_info" maxlength="500" value="<%= license.aircraft_info || '' %>">
+          </div>
+          <div class="field">
+            <label for="issue_date">تاريخ الإصدار *</label>
+            <input type="date" id="issue_date" name="issue_date" required value="<%= license.issue_date || '' %>">
+          </div>
+          <div class="field">
+            <label for="expiration_date">تاريخ الانتهاء *</label>
+            <input type="date" id="expiration_date" name="expiration_date" required value="<%= license.expiration_date || '' %>">
+          </div>
+          <div class="field">
+            <label for="issued_by">صادر عن *</label>
+            <input type="text" id="issued_by" name="issued_by" required maxlength="150" value="<%= license.issued_by || '' %>">
+          </div>
+          <div class="field full">
+            <label for="notes">ملاحظات إضافية</label>
+            <textarea id="notes" name="notes" maxlength="2000"><%= license.notes || '' %></textarea>
+          </div>
+        </div>
+
+        <p class="hint">رقم الترخيص وحالته لا يمكن تغييرهما من هنا. لتغيير الحالة استخدم صفحة عرض الترخيص.</p>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+          <a href="/licenses/<%= encodeURIComponent(license.license_number) %>" class="btn btn-outline">إلغاء</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<%- include('partials/footer') %>

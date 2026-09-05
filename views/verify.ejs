@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<section class="section">
+  <div class="container">
+    <div class="verify-hero">
+      <h1 style="font-family:var(--font-display);color:var(--navy);">التحقق من ترخيص</h1>
+      <p class="muted">أدخل رقم الترخيص الكامل للتحقق من صلاحيته في سجلات MTAG.</p>
+    </div>
+
+    <form method="GET" action="/verify" class="verify-search">
+      <input type="text" id="verifyNumberInput" name="number" placeholder="مثال: 077.599239.MTAG" value="<%= queryNumber %>" required>
+      <button type="submit" class="btn btn-primary">تحقق</button>
+    </form>
+
+    <% if (searched) { %>
+      <div class="verify-result">
+        <% if (formatError) { %>
+          <div class="verify-status-bad">
+            ❌ صيغة رقم الترخيص غير صحيحة. يجب أن تكون بالشكل: 077.XXXXXX.MTAG
+          </div>
+        <% } else if (!license) { %>
+          <div class="verify-status-bad">
+            ❌ لم يتم العثور على هذا الترخيص في سجلات MTAG.
+          </div>
+        <% } else { %>
+          <div class="verify-status-ok">
+            ✅ ترخيص صالح<br>
+            <span class="mono"><%= license.license_number %></span>
+          </div>
+          <div class="panel">
+            <ul class="detail-list">
+              <li><span class="k">حامل الترخيص</span><span class="v"><%= license.holder_name %></span></li>
+              <li><span class="k">الشركة / الجهة</span><span class="v"><%= license.company || '—' %></span></li>
+              <li><span class="k">نوع الترخيص</span><span class="v"><%= license.license_type %></span></li>
+              <li><span class="k">الفئة</span><span class="v"><%= categoryLabel(license.category) %></span></li>
+              <li><span class="k">الحالة</span><span class="v"><span class="badge badge-<%= license.status.toLowerCase() %>"><%= statusLabels[license.status] %></span></span></li>
+              <li><span class="k">تاريخ الإصدار</span><span class="v"><%= license.issue_date %></span></li>
+              <li><span class="k">تاريخ الانتهاء</span><span class="v"><%= license.expiration_date %></span></li>
+            </ul>
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+  </div>
+</section>
+
+<%- include('partials/footer') %>
